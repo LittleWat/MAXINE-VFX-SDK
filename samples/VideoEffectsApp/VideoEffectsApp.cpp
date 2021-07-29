@@ -654,6 +654,15 @@ FXApp::Err FXApp::processMovie(const char *inFile, const char *outFile) {
 
     if (outFile)
       writer.write(_dstImg);
+    
+    if (!cv::imwrite("webcam-input-superres_strength1.png", _srcImg)) {
+      printf("Error writing: \"%s\"\n", "output\\webcam-input.png");
+      return errWrite;
+    }
+    if (!cv::imwrite("webcam-output-superres_strength1.png", _dstImg)) {
+      printf("Error writing: \"%s\"\n", "output\\webcam-superres_strength1.png");
+      return errWrite;
+    }
 
     if (_show) {
       drawFrameRate(_dstImg);
