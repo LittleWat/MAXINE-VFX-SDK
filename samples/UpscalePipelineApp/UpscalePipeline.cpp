@@ -60,6 +60,28 @@
 #define DEFAULT_CODEC "H264"
 #endif // _WIN32
 
+//--model_dir="C:\Program Files\NVIDIA Corporation\NVIDIA_Video_Effects_SDK\bin\models"
+//    --webcam
+//--effect=SuperRes
+//    --cam_res=1080
+//    --resolution=2160
+//    --strength=1
+
+//--model_dir="C:\Program Files\NVIDIA Corporation\NVIDIA_Video_Effects_SDK\bin\models"
+//--in_file="C:\Program Files\NVIDIA Corporation\NVIDIA Audio Effects SDK\noisy-videos\bgm.mp4"
+//--ar_strength=1
+//--upscale_strength=1
+//--resolution=2160
+//--out_file=bgm_upscale_ar1_upscale1.mp4
+
+
+//--model_dir="C:\Program Files\NVIDIA Corporation\NVIDIA_Video_Effects_SDK\bin\models"
+//    --in_file="C:\Users\kohei_watanabe\codes\littlewat\MAXINE-VFX-SDK\webcam-input-superres_strength1.png"
+//    --ar_strength=1
+//    --upscale_strength=1
+//    --resolution=2160
+//    --out_file="C:\Users\kohei_watanabe\codes\littlewat\MAXINE-VFX-SDK\webcam-input-superres_strength1--outimg.png"
+
 
 bool        FLAG_debug               = false,
             FLAG_verbose             = false,
@@ -380,12 +402,13 @@ void FXApp::drawFrameRate(cv::Mat &img) {
       _framePeriod += (t - _framePeriod) * (1.f / timeConstant);  // 1 pole IIR filter
     else
       _framePeriod = t;
-    if (_showFPS) {
+
+//    if (_showFPS) {
       char buf[32];
       snprintf(buf, sizeof(buf), "%.1f", 1. / _framePeriod);
       printf("fps: %s\n", buf);
-      cv::putText(img, buf, cv::Point(10, img.rows - 10), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 1);
-    }
+//      cv::putText(img, buf, cv::Point(10, img.rows - 10), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 1);
+//    }
   } else {            // Ludicrous time interval; reset
     _framePeriod = 0.f;  // WAKE UP
   }
@@ -630,6 +653,17 @@ FXApp::Err FXApp::processMovie(const char *inFile, const char *outFile) {
 
     if (outFile)
       writer.write(_dstImg);
+
+//    printf("a");
+//    if (!cv::imwrite("webcam-input-ar1-upscale1.png", _srcImg)) {
+//      printf("Error writing: \"%s\"\n", "output\\webcam-input.png");
+//      return errWrite;
+//    }
+//    if (!cv::imwrite("webcam-output-ar1-upscale1.png", _dstImg)) {
+//      printf("Error writing: \"%s\"\n", "output\\webcam-superres_strength1.png");
+//      return errWrite;
+//    }
+    drawFrameRate(_dstImg); // TODO delete later
     if (_show) {
       drawFrameRate(_dstImg);
       cv::namedWindow("Output", cv::WINDOW_NORMAL);
