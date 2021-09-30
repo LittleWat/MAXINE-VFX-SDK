@@ -19,7 +19,22 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-###############################################################################*/
+--model_dir="C:\Program Files\NVIDIA Corporation\NVIDIA_Video_Effects_SDK\bin\models"
+--in_file="C:\Users\kohei_watanabe\codes\littlewat\MAXINE-VFX-SDK\webcam-input-superres_strength1.png"
+--out_file="C:\Users\kohei_watanabe\codes\littlewat\MAXINE-VFX-SDK\webcam-input-superres_strength1-superesout.png"
+--effect=SuperRes
+--resolution=2160
+--strength=1
+
+--model_dir="C:\Program Files\NVIDIA Corporation\NVIDIA_Video_Effects_SDK\bin\models"
+--webcam
+--effect=SuperRes
+--cam_res=1080
+--resolution=2160
+--strength=1
+
+
+ ###############################################################################*/
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -377,6 +392,7 @@ void FXApp::drawFrameRate(cv::Mat &img) {
     if (_showFPS) {
       char buf[32];
       snprintf(buf, sizeof(buf), "%.1f", 1. / _framePeriod);
+      printf("fps: %s\n", buf);
       cv::putText(img, buf, cv::Point(10, img.rows - 10), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 1);
     }
   } else {            // Ludicrous time interval; reset
@@ -628,6 +644,9 @@ FXApp::Err FXApp::processMovie(const char *inFile, const char *outFile) {
     }
   }
 
+  printf("srcImg shape: [%d, %d]\n", _srcImg.rows, _srcImg.cols);
+  printf("dstImg shape: [%d, %d]\n", _dstImg.rows, _dstImg.cols);
+
   BAIL_IF_ERR(vfxErr = NvVFX_SetImage(_eff, NVVFX_INPUT_IMAGE,  &_srcGpuBuf));
   BAIL_IF_ERR(vfxErr = NvVFX_SetImage(_eff, NVVFX_OUTPUT_IMAGE, &_dstGpuBuf));
   BAIL_IF_ERR(vfxErr = NvVFX_SetCudaStream(_eff, NVVFX_CUDA_STREAM, stream));
@@ -654,7 +673,7 @@ FXApp::Err FXApp::processMovie(const char *inFile, const char *outFile) {
 
     if (outFile)
       writer.write(_dstImg);
-    
+
     if (!cv::imwrite("webcam-input-superres_strength1.png", _srcImg)) {
       printf("Error writing: \"%s\"\n", "output\\webcam-input.png");
       return errWrite;
